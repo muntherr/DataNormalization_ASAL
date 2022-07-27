@@ -1,4 +1,4 @@
-drop table subject;
+drop table student;
 
 
 CREATE TABLE Teacher (
@@ -28,17 +28,18 @@ CREATE TABLE Course(
     FOREIGN KEY(Subject_Name) REFERENCES Subject(Subject_Name)
 );
 -- Many to Many realation between the teacher and the course table
+DROP table teacherAssignedCourse;
 CREATE TABLE teacherAssignedCourse(
     
-    Teacher_ID INT,
-    Course_ID INT,
+    Teacher_ID INT ,
+    Course_ID INT ,
     -- constraints are used to specify rules for the data in a table
     CONSTRAINT Teacher_Course_PK PRIMARY KEY (Teacher_ID ,Course_ID),
     CONSTRAINT Teacher_FK FOREIGN KEY (Teacher_ID) REFERENCES Teacher(Teacher_ID),
     CONSTRAINT Course_FK FOREIGN KEY (Course_ID) REFERENCES Course(Course_ID)
 );
 
-SELECT * FROM  Teacher,CourseTakePlaceInClass,Classes,Student,teacherAssignedCourse,Subject;
+SELECT * FROM  teacherAssignedCourse; --Teacher,CourseTakePlaceInClass,Classes,Student,teacherAssignedCourse,Subject;
 
 CREATE TABLE Student(
    
@@ -49,6 +50,7 @@ CREATE TABLE Student(
     DOB DATE, 
     PRIMARY KEY(Student_ID),
     FOREIGN KEY(Course_ID) REFERENCES Course(Course_ID)
+    ON DELETE CASCADE
 );
 
 
@@ -100,20 +102,22 @@ INNER JOIN teacherAssignedCourse ON Teacher.Teacher_ID =teacherAssignedCourse.Te
 
 
 -- Find all information for each course, student, class, and Teacher
-SELECT * --  Course.Course_Name,Course.Subject_Name,Teacher.Teacher_ID, Teacher.Teacher_Name, CourseTakePlaceInClass.Class_ID,Student.Student_Name,  Student.phone, Student.dob
-FROM Course
-INNER JOIN Student
+SELECT DISTINCT * --  Course.Course_Name,Course.Subject_Name,Teacher.Teacher_ID, Teacher.Teacher_Name, CourseTakePlaceInClass.Class_ID,Student.Student_Name,  Student.phone, Student.dob
+FROM Student
+ JOIN Course
 ON Student.Course_ID = Course.Course_ID
-INNER JOIN teacherAssignedCourse
+ JOIN teacherAssignedCourse
 ON Course.Course_ID =teacherAssignedCourse.Course_ID
-INNER JOIN Teacher
-ON teacherAssignedCourse.Teacher_ID = Teacher.Teacher_ID
-INNER JOIN CourseTakePlaceInClass
+ JOIN Teacher
+ON teacherAssignedCourse.Teacher_ID = Teacher.Teacher_ID AND teacherAssignedCourse.Course_ID = Course.Course_ID
+ JOIN CourseTakePlaceInClass
 ON Course.Course_ID =CourseTakePlaceInClass.Course_ID
 ;
 
+DELETE FROM  STUDENT WHERE Student_Name = 'Munther Anati';
 
-
+SELECT * FROM Course;
+DELETE FROM student WHERE Student.Student_ID = 118;
 
 -- Find the course id for each class Room
 SELECT  cl.Class_ID,cl.Course_ID
@@ -149,12 +153,12 @@ SELECT * FROM teacherAssignedCourse;
 -- teaher go to class to givae a course with the students
 
 INSERT INTO teacherAssignedCourse VALUES (1,1);
-INSERT INTO teacherAssignedCourse VALUES (1,2);
 
-INSERT INTO teacherAssignedCourse VALUES (2,4);
-INSERT INTO teacherAssignedCourse VALUES (2,5);
-INSERT INTO teacherAssignedCourse VALUES (2,1);
 INSERT INTO teacherAssignedCourse VALUES (2,2);
+
+
+
+
 
 
 
@@ -176,6 +180,8 @@ INSERT INTO Student VALUES(116,'Yasmin Shadi',0591122334,2,'2000-07-18');
 INSERT INTO Student VALUES(115,'Rawan Yassin',0592233445,3,'2001-06-19');
 INSERT INTO Student VALUES(114,'Thaer Siam',0593344556,3,'1998-02-04');
 
+
+SELECT * FROM Student WHERE Student.Student_ID = '116';
 
 
 -- Show how does the relation work 
